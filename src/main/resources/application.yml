@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: appointment-service
+  jpa:
+    open-in-view: false
+
+server:
+  port: 8082
+  servlet:
+    context-path: /
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:hospital-secret-key-test-12345678901234567890}
+    expiration: 86400000
+
+user-service:
+  base-url: http://localhost:8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
