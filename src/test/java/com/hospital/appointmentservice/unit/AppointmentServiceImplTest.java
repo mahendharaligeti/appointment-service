@@ -1,5 +1,6 @@
 package com.hospital.appointmentservice.unit;
 
+import com.hospital.appointmentservice.config.ObservedOperation;
 import com.hospital.appointmentservice.dto.AppointmentResponse;
 import com.hospital.appointmentservice.dto.BookAppointmentRequest;
 import com.hospital.appointmentservice.entity.Appointment;
@@ -12,6 +13,7 @@ import com.hospital.appointmentservice.exception.InvalidAppointmentStateExceptio
 import com.hospital.appointmentservice.repository.AppointmentRepository;
 import com.hospital.appointmentservice.repository.DoctorRepository;
 import com.hospital.appointmentservice.service.AppointmentServiceImpl;
+import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +42,10 @@ class AppointmentServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        appointmentService = new AppointmentServiceImpl(appointmentRepository, doctorRepository);
+        appointmentService = new AppointmentServiceImpl(
+                appointmentRepository,
+                doctorRepository,
+                new ObservedOperation(ObservationRegistry.create()));
         
         testDoctor = new Doctor("Dr. Sharma", "Cardiology", "sharma@test.com", "123",
             LocalTime.of(9, 0), LocalTime.of(17, 0));

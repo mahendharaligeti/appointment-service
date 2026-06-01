@@ -1,11 +1,13 @@
 package com.hospital.appointmentservice.unit;
 
+import com.hospital.appointmentservice.config.ObservedOperation;
 import com.hospital.appointmentservice.dto.DoctorResponse;
 import com.hospital.appointmentservice.entity.Doctor;
 import com.hospital.appointmentservice.exception.DoctorNotFoundException;
 import com.hospital.appointmentservice.repository.AppointmentRepository;
 import com.hospital.appointmentservice.repository.DoctorRepository;
 import com.hospital.appointmentservice.service.DoctorServiceImpl;
+import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +36,10 @@ class DoctorServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        doctorService = new DoctorServiceImpl(doctorRepository, appointmentRepository);
+        doctorService = new DoctorServiceImpl(
+                doctorRepository,
+                appointmentRepository,
+                new ObservedOperation(ObservationRegistry.create()));
     }
 
     @Test

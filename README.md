@@ -19,6 +19,8 @@ A production-ready Spring Boot 3.x microservice for managing doctor appointments
 - Time slot availability checking
 - Role-based access control (PATIENT, DOCTOR, ADMIN)
 - RESTful API with comprehensive error handling
+- Structured JSON logging with request and trace correlation IDs
+- OpenTelemetry OTLP tracing for API, database, and outbound service calls
 - Comprehensive unit and integration tests
 - H2 in-memory database for testing
 
@@ -109,6 +111,21 @@ Production profile with environment-based configuration and validation-only DDL.
 
 ### application-test.yml
 Test profile with H2 in-memory database for integration tests.
+
+## Logging and Observability
+
+The service writes structured JSON logs to the console through Logback. Each request receives an `X-Correlation-ID`; if the caller sends one, it is reused, otherwise the service creates one and returns it in the response. Logs include MDC fields such as `requestId`, `traceId`, and `spanId` when tracing is active.
+
+Tracing is enabled through Spring Boot Actuator, Micrometer Tracing, and OpenTelemetry OTLP. API requests are observed automatically by Spring MVC, database operations are observed through JDBC datasource instrumentation, and outbound calls should use the configured `userServiceWebClient` so trace context and correlation IDs propagate to other services.
+
+Useful environment variables:
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| OTEL_EXPORTER_OTLP_TRACES_ENDPOINT | http://localhost:4318/v1/traces | OTLP HTTP traces endpoint |
+| TRACING_SAMPLING_PROBABILITY | 1.0 dev / 0.25 prod | Trace sampling probability |
+
+The included Docker Compose file starts an OpenTelemetry Collector on ports `4317` and `4318` and sends collected traces to the collector debug exporter.
 
 ## Database Schema
 

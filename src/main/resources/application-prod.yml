@@ -14,3 +14,16 @@ spring:
 
 user-service:
   base-url: ${USER_SERVICE_URL}
+
+management:
+  tracing:
+    sampling:
+      probability: ${TRACING_SAMPLING_PROBABILITY:0.25}
+
+logging:
+  level:
+    root: INFO
+    com.hospital.appointmentservice: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+    org.hibernate.orm.jdbc.bind: WARN

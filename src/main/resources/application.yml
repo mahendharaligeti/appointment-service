@@ -3,6 +3,9 @@ spring:
     name: appointment-service
   jpa:
     open-in-view: false
+    properties:
+      hibernate:
+        generate_statistics: true
 
 server:
   port: 8082
@@ -21,7 +24,34 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,metrics,loggers
   endpoint:
     health:
       show-details: always
+  tracing:
+    sampling:
+      probability: ${TRACING_SAMPLING_PROBABILITY:1.0}
+  otlp:
+    tracing:
+      endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318/v1/traces}}
+
+jdbc:
+  datasource-proxy:
+    type: SPRING_PROXY
+  query:
+    enabled: true
+  connection:
+    enabled: true
+  resultset-operations:
+    enabled: false
+logging:
+  level:
+    root: INFO
+    com.hospital.appointmentservice: INFO
+    org.springframework.web: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+    org.hibernate.orm.jdbc.bind: WARN
+  pattern:
+    correlation: "[${spring.application.name:},%X{traceId:-},%X{spanId:-},%X{requestId:-}] "
+  include-application-name: false

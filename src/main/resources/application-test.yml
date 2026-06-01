@@ -14,3 +14,17 @@ spring:
   h2:
     console:
       enabled: true
+
+management:
+  tracing:
+    sampling:
+      probability: 0.0
+
+jdbc:
+  datasource-proxy:
+    enabled: false
+
+logging:
+  level:
+    root: WARN
+    com.hospital.appointmentservice: INFO
